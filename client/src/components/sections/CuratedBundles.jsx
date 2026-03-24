@@ -2,47 +2,67 @@ import { bundles } from "../../data/index.js";
 import AnimateIn from "../ui/AnimateIn.jsx";
 
 const CuratedBundles = ({ onOpenBundleDetail }) => (
-  <section style={{ padding: "72px 48px 80px", background: "#F9F9F9", borderTop: "1px solid #EDE8DF" }}>
+  <section style={{ padding: "80px 48px", background: "#1A1A1A", borderTop: "3px solid #FF6B35" }}>
     <AnimateIn>
-      <div style={{ marginBottom: "36px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
-          <span style={{ width: "22px", height: "1px", background: "#BFA75D", display: "inline-block" }} />
-          <span style={{ fontSize: "11px", letterSpacing: "0.18em", color: "#BFA75D", textTransform: "uppercase" }}>Curated Sets</span>
+      <div style={{ marginBottom: "48px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px" }}>
+          <span style={{ width: "28px", height: "3px", background: "#FF6B35", display: "inline-block" }} />
+          <span style={{
+            fontSize: "12px", fontWeight: 800, color: "#FFFFFF", textTransform: "uppercase",
+            letterSpacing: "0.2em", background: "#FF6B35", padding: "6px 12px", borderRadius: "4px",
+          }}>Bundle & Save</span>
         </div>
-        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(28px, 3vw, 40px)", fontWeight: 400, margin: "0 0 8px", letterSpacing: "-0.5px" }}>
-          Buy the whole vibe, not just a piece.
+        <h2 style={{
+          fontFamily: "'Arial Black', Arial, sans-serif",
+          fontSize: "clamp(32px, 4vw, 52px)",
+          fontWeight: 900, color: "#FFFFFF",
+          margin: "0 0 12px", letterSpacing: "-2px",
+          textTransform: "uppercase", lineHeight: 1,
+        }}>
+          BUY THE WHOLE VIBE
         </h2>
-        <p style={{ fontSize: "14px", color: "#6B5E50", margin: 0, fontWeight: 300 }}>
-          Everything you need for a room — picked to work together, priced to make sense.
+        <p style={{
+          fontSize: "15px", color: "rgba(255,255,255,0.7)",
+          margin: 0, fontWeight: 600, maxWidth: "450px",
+        }}>
+          Everything you need for a room — picked to work together. All under $159 per piece.
         </p>
       </div>
     </AnimateIn>
 
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px" }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
       {bundles.map((bundle, i) => (
         <AnimateIn key={bundle.name} delay={i * 100}>
           <div
             onClick={() => onOpenBundleDetail(bundle)}
             style={{
-              background: bundle.bg,
-              border: "1px solid #EDE8DF",
-              borderRadius: "12px",
+              background: "#FFFFFF",
+              border: "2px solid #FF6B35",
+              borderRadius: "8px",
               overflow: "hidden",
-              transition: "box-shadow 0.2s, transform 0.2s",
+              transition: "all 0.2s",
               cursor: "pointer",
               height: "100%",
               display: "flex",
               flexDirection: "column",
+              boxShadow: "4px 4px 0px #FF6B35",
             }}
-            onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,0,0,0.09)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-            onMouseLeave={e => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.transform = "none"; }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = "translate(-2px, -2px)";
+              e.currentTarget.style.boxShadow = "6px 6px 0px #FFFFFF";
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = "translate(0, 0)";
+              e.currentTarget.style.boxShadow = "4px 4px 0px #FF6B35";
+            }}
           >
             {/* Image area */}
             <div style={{
-              height: "180px",
+              height: "200px",
               position: "relative",
               overflow: "hidden",
               flexShrink: 0,
+              background: bundle.bg,
             }}>
               <img
                 src={bundle.image}
@@ -55,75 +75,82 @@ const CuratedBundles = ({ onOpenBundleDetail }) => (
                 onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
                 onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
               />
-              {/* Accent gradient overlay at bottom of image */}
-              <div style={{
-                position: "absolute", inset: 0,
-                background: `linear-gradient(to top, ${bundle.bg} 0%, transparent 55%)`,
-              }} />
               {/* Savings badge */}
               {bundle.originalPrice && (
                 <div style={{
-                  position: "absolute", top: "10px", left: "10px",
-                  background: "#C31818", color: "#FDFAF5",
-                  borderRadius: "4px", padding: "3px 8px",
-                  fontSize: "9px", letterSpacing: "0.1em", textTransform: "uppercase",
-                  fontFamily: "'DM Sans', sans-serif",
-                }}>Save</div>
+                  position: "absolute", top: "12px", left: "12px",
+                  background: "#FF6B35", color: "#FFFFFF",
+                  borderRadius: "4px", padding: "6px 12px",
+                  fontSize: "11px", fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase",
+                  border: "2px solid #1A1A1A",
+                }}>SAVE {Math.round((1 - parseFloat(bundle.price.replace("S$", "")) / parseFloat(bundle.originalPrice.replace("S$", ""))) * 100)}%</div>
               )}
             </div>
 
             {/* Content */}
-            <div style={{ padding: "20px 22px 22px", flex: 1, display: "flex", flexDirection: "column" }}>
+            <div style={{ padding: "24px", flex: 1, display: "flex", flexDirection: "column" }}>
               <h3 style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: "22px", fontWeight: 500, margin: "0 0 10px",
-                letterSpacing: "-0.3px", color: "#1C1714",
+                fontFamily: "'Arial Black', Arial, sans-serif",
+                fontSize: "20px", fontWeight: 900,
+                margin: "0 0 12px", letterSpacing: "-0.5px",
+                color: "#1A1A1A", textTransform: "uppercase",
               }}>{bundle.name}</h3>
 
               {/* Contents pills */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", marginBottom: "14px" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "16px" }}>
                 {bundle.contents.map(item => (
                   <span key={item} style={{
-                    fontSize: "10px", color: "#6B5E50",
-                    border: "1px solid #DDD5C8",
-                    borderRadius: "20px", padding: "2px 9px",
-                    background: "transparent",
-                    letterSpacing: "0.02em",
+                    fontSize: "11px", fontWeight: 700, color: "#FFFFFF",
+                    background: "#1A1A1A",
+                    borderRadius: "4px", padding: "4px 10px",
+                    textTransform: "uppercase", letterSpacing: "0.05em",
                   }}>{item}</span>
                 ))}
               </div>
 
               {/* Hook */}
               <p style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontStyle: "italic", fontSize: "15px",
-                color: "#2A1F18", lineHeight: 1.5,
-                margin: "0 0 16px", fontWeight: 400,
+                fontFamily: "'Arial Black', Arial, sans-serif",
+                fontStyle: "italic", fontSize: "14px",
+                color: "#666666", lineHeight: 1.5,
+                margin: "0 0 18px", fontWeight: 400,
                 flex: 1,
               }}>"{bundle.hook}"</p>
 
               {/* Price row */}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div>
-                  <div style={{ fontSize: "10px", color: "#A0907A", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: "2px" }}>Bundle price</div>
+                  <div style={{
+                    fontSize: "10px", fontWeight: 800,
+                    color: "#999999", letterSpacing: "0.1em",
+                    textTransform: "uppercase", marginBottom: "4px",
+                  }}>BUNDLE PRICE</div>
                   <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
-                    <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 500, color: "#1C1714" }}>{bundle.price}</span>
+                    <span style={{
+                      fontFamily: "'Arial Black', Arial, sans-serif",
+                      fontSize: "28px", fontWeight: 900,
+                      color: "#FF6B35", letterSpacing: "-1px",
+                    }}>{bundle.price}</span>
                     {bundle.originalPrice && (
-                      <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "14px", color: "#A0907A", textDecoration: "line-through" }}>{bundle.originalPrice}</span>
+                      <span style={{
+                        fontSize: "15px", color: "#999999",
+                        textDecoration: "line-through", fontWeight: 400
+                      }}>{bundle.originalPrice}</span>
                     )}
                   </div>
                 </div>
                 <button
                   onClick={e => { e.stopPropagation(); onOpenBundleDetail(bundle); }}
                   style={{
-                    background: "#1C1714", color: "#FDFAF5",
-                    border: "none", borderRadius: "8px",
-                    padding: "9px 18px", fontSize: "12px", fontWeight: 500,
-                    cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
-                    letterSpacing: "0.02em", transition: "opacity 0.15s",
+                    background: "#1A1A1A", color: "#FFFFFF",
+                    border: "none", borderRadius: "6px",
+                    padding: "12px 20px", fontSize: "13px", fontWeight: 800,
+                    cursor: "pointer", fontFamily: "'Arial Black', Arial, sans-serif",
+                    textTransform: "uppercase", letterSpacing: "0.05em",
+                    transition: "background 0.15s",
                   }}
-                  onMouseEnter={e => e.currentTarget.style.opacity = "0.82"}
-                  onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+                  onMouseEnter={e => e.currentTarget.style.background = "#333333"}
+                  onMouseLeave={e => e.currentTarget.style.background = "#1A1A1A"}
                 >View Bundle</button>
               </div>
             </div>

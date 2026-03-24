@@ -18,7 +18,8 @@ html, body, #root {
 }
 
 body {
-  background: #FDFAF5;
+  background: #FFFFFF;
+  font-family: 'Arial Black', Arial, sans-serif;
 }
 
 button {

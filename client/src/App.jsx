@@ -18,7 +18,7 @@ import CtaBanner from "./components/sections/CtaBanner.jsx";
 
 import { CheckIcon } from "./components/icons.jsx";
 
-export default function Livora() {
+export default function One59() {
   const [selected, setSelected] = useState(null);
   const [detailProduct, setDetailProduct] = useState(null);
   const [detailBundle, setDetailBundle] = useState(null);
@@ -48,8 +48,8 @@ export default function Livora() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#FDFAF5", fontFamily: "'DM Sans', sans-serif", color: "#1C1714", overflowX: "hidden" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+    <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "'Arial Black', Arial, sans-serif", color: "#1A1A1A", overflowX: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Anton&family=Anton&display=swap" rel="stylesheet" />
 
       <Navbar
         cartCount={cartCount}
@@ -101,10 +101,10 @@ export default function Livora() {
       {toastItem && (
         <div style={{
           position: "fixed", bottom: "28px", left: "50%", transform: "translateX(-50%)",
-          background: "#1C1714", color: "#FDFAF5", borderRadius: "10px",
-          padding: "12px 22px", fontSize: "13px",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.22)", zIndex: 300,
-          animation: "fadeInUp 0.25s ease",
+          background: "#FF6B35", color: "#FFFFFF", borderRadius: "8px",
+          padding: "14px 24px", fontSize: "14px", fontWeight: 700,
+          boxShadow: "0 8px 32px rgba(255,107,53,0.4)", zIndex: 300,
+          animation: "fadeInUp 0.25s ease", textTransform: "uppercase",
           display: "flex", alignItems: "center", gap: "10px",
           whiteSpace: "nowrap",
         }}>
@@ -137,9 +137,11 @@ export default function Livora() {
           from { transform: rotate(0deg); }
           to   { transform: rotate(360deg); }
         }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #DDD5C8; border-radius: 2px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: "#F0F0F0"; }
+        ::-webkit-scrollbar-thumb { background: "#FF6B35"; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: "#E55A2B"; }
+
         .product-img-wrap > img,
         .product-img-wrap > svg {
           transition: transform 0.35s ease;
@@ -151,14 +153,15 @@ export default function Livora() {
         .product-quick-add {
           position: absolute;
           bottom: 0; left: 0; right: 0;
-          background: rgba(28,23,20,0.92);
-          color: #FDFAF5;
+          background: rgba(255,107,53,0.95);
+          color: #FFFFFF;
           border: none;
-          padding: 13px 16px;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 12px;
-          font-weight: 500;
-          letter-spacing: 0.04em;
+          padding: 14px 16px;
+          font-family: 'Arial Black', Arial, sans-serif;
+          font-size: 13px;
+          font-weight: 800;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
           cursor: pointer;
           width: 100%;
           transform: translateY(100%);
@@ -169,7 +172,7 @@ export default function Livora() {
           transform: translateY(0);
         }
         .product-quick-add:hover {
-          background: rgba(28,23,20,1);
+          background: rgba(255,107,53,1);
         }
       `}</style>
     </div>

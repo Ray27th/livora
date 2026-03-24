@@ -1,30 +1,36 @@
 import AnimateIn from "../ui/AnimateIn.jsx";
 
 const items = [
-  { stat: "4.9 / 5", label: "from 2,400+ verified reviews" },
-  { stat: "Free delivery", label: "on orders over S$500" },
-  { stat: "30-day returns", label: "free and hassle-free" },
-  { stat: "SG · MY · ID", label: "shipping across Southeast Asia" },
+  { stat: "UNDER $159", label: "EVERYTHING. ALWAYS." },
+  { stat: "FREE DELIVERY", label: "OVER S$200" },
+  { stat: "FACTORY DIRECT", label: "NO MIDDLEMAN" },
+  { stat: "SG · MY · ID", label: "SHIPPING REGIONWIDE" },
 ];
 
 const TrustStrip = () => (
   <AnimateIn>
     <div style={{
-      background: "#F9F9F9",
-      borderTop: "1px solid #EDE8DF",
-      borderBottom: "1px solid #EDE8DF",
+      background: "#FF6B35",
+      borderTop: "2px solid #1A1A1A",
+      borderBottom: "2px solid #1A1A1A",
       display: "flex", alignItems: "stretch",
     }}>
       {items.map((item, i) => (
         <div key={i} style={{
-          flex: 1, display: "flex", alignItems: "center", gap: "14px",
-          padding: "16px 24px",
-          borderRight: i < 3 ? "1px solid #EDE8DF" : "none",
+          flex: 1, display: "flex", alignItems: "center", gap: "16px",
+          padding: "18px 24px",
+          borderRight: i < 3 ? "2px solid #1A1A1A" : "none",
         }}>
-          <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#BFA75D", flexShrink: 0 }} />
+          <div style={{
+            width: "10px", height: "10px",
+            borderRadius: "50%",
+            background: "#1A1A1A",
+            flexShrink: 0,
+            border: "2px solid #FFFFFF",
+          }} />
           <div>
-            <div style={{ fontSize: "13px", fontWeight: 500, color: "#1C1714", lineHeight: 1.3 }}>{item.stat}</div>
-            <div style={{ fontSize: "11px", color: "#8B7B6B", marginTop: "1px" }}>{item.label}</div>
+            <div style={{ fontSize: "16px", fontWeight: 900, color: "#1A1A1A", lineHeight: 1.1, fontFamily: "'Arial Black', Arial, sans-serif", textTransform: "uppercase" }}>{item.stat}</div>
+            <div style={{ fontSize: "11px", color: "#1A1A1A", marginTop: "3px", fontWeight: 700, letterSpacing: "0.05em" }}>{item.label}</div>
           </div>
         </div>
       ))}

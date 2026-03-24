@@ -3,15 +3,15 @@ import AnimateIn from "../ui/AnimateIn.jsx";
 
 const steps = [
   {
-    n: "1", title: "Describe your room",
+    n: "1", title: "DESCRIBE YOUR ROOM",
     body: "Write naturally — style, walls, floors, lighting. Try: \"Bright HDB living room, parquet floors, warm light.\"",
   },
   {
-    n: "2", title: "Pick a piece",
+    n: "2", title: "PICK A PIECE",
     body: "Choose any product from the catalog. It'll be composited intelligently into your described scene.",
   },
   {
-    n: "3", title: "See your room",
+    n: "3", title: "SEE YOUR ROOM",
     body: "A photorealistic render with the furniture placed naturally. Regenerate or adjust your prompt anytime.",
   },
 ];
@@ -19,27 +19,34 @@ const steps = [
 const HowItWorks = forwardRef((_, ref) => (
   <section ref={ref} style={{
     padding: "80px 48px",
-    background: "#F9F9F9",
-    borderTop: "1px solid #EDE8DF",
+    background: "#FF6B35",
+    borderTop: "3px solid #1A1A1A",
   }}>
-    <div style={{ maxWidth: "960px", margin: "0 auto" }}>
+    <div style={{ maxWidth: "1040px", margin: "0 auto" }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "88px", alignItems: "center" }}>
         <AnimateIn>
           <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
-            <span style={{ width: "28px", height: "1px", background: "#A0907A", display: "inline-block" }} />
-            <span style={{ fontSize: "11px", letterSpacing: "0.16em", color: "#A0907A", textTransform: "uppercase" }}>
-              AI Visualization
+            <span style={{ width: "28px", height: "3px", background: "#1A1A1A", display: "inline-block" }} />
+            <span style={{
+              fontSize: "12px", fontWeight: 800, color: "#1A1A1A", textTransform: "uppercase",
+              letterSpacing: "0.2em", background: "#FFFFFF", padding: "6px 12px", borderRadius: "4px",
+            }}>
+              AI VISUALIZATION
             </span>
           </div>
           <h2 style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: "clamp(36px, 4vw, 52px)",
-            fontWeight: 300, margin: "0 0 20px", lineHeight: 1.08,
-            letterSpacing: "-0.8px",
+            fontFamily: "'Arial Black', Arial, sans-serif",
+            fontSize: "clamp(38px, 4.5vw, 58px)",
+            fontWeight: 900, margin: "0 0 20px",
+            letterSpacing: "-2px", color: "#1A1A1A",
+            textTransform: "uppercase", lineHeight: 1,
           }}>
-            See it before<br />you commit.
+            SEE IT BEFORE<br />YOU COMMIT.
           </h2>
-          <p style={{ color: "#6B5E50", fontSize: "15px", lineHeight: 1.8, margin: 0, fontWeight: 300 }}>
+          <p style={{
+            color: "#1A1A1A", fontSize: "15px", lineHeight: 1.7,
+            margin: 0, fontWeight: 700,
+          }}>
             The only furniture platform in Southeast Asia that lets you render any piece in your room — from a single sentence.
           </p>
         </AnimateIn>
@@ -51,18 +58,24 @@ const HowItWorks = forwardRef((_, ref) => (
                 display: "flex", gap: "24px",
                 paddingBottom: i < 2 ? "32px" : "0",
                 marginBottom: i < 2 ? "32px" : "0",
-                borderBottom: i < 2 ? "1px solid #E8DFD0" : "none",
+                borderBottom: i < 2 ? "2px solid #1A1A1A" : "none",
               }}>
                 <div style={{
-                  width: "34px", height: "34px", flexShrink: 0,
-                  background: "#1C1714", color: "#FDFAF5",
+                  width: "40px", height: "40px", flexShrink: 0,
+                  background: "#1A1A1A", color: "#FFFFFF",
                   borderRadius: "50%",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontFamily: "'Cormorant Garamond', serif", fontSize: "15px", fontWeight: 600,
+                  fontFamily: "'Arial Black', Arial, sans-serif",
+                  fontSize: "18px", fontWeight: 900,
                 }}>{step.n}</div>
                 <div>
-                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, marginBottom: "6px" }}>{step.title}</div>
-                  <div style={{ color: "#8B7B6B", fontSize: "14px", lineHeight: 1.7 }}>{step.body}</div>
+                  <div style={{
+                    fontFamily: "'Arial Black', Arial, sans-serif",
+                    fontSize: "18px", fontWeight: 900,
+                    marginBottom: "8px", color: "#1A1A1A",
+                    textTransform: "uppercase",
+                  }}>{step.title}</div>
+                  <div style={{ color: "#1A1A1A", fontSize: "14px", lineHeight: 1.6, fontWeight: 600 }}>{step.body}</div>
                 </div>
               </div>
             </AnimateIn>
