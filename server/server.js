@@ -54,6 +54,7 @@ app.post('/api/generate-image', async (req, res) => {
       productName, productDesc, productCategory, productTags,
       roomDesc, selectedColour, selectedSize,
       productImageBase64, productImageMimeType,
+      additionalProducts = [],
     } = req.body;
 
     const tagsStr = Array.isArray(productTags) ? productTags.join(', ') : (productTags || '');
@@ -97,6 +98,22 @@ app.post('/api/generate-image', async (req, res) => {
       console.log('Vision Analysis Result:', detailedVisualDesc);
     }
 
+    // ── Step 1b: Analyze additional bundle items ──────────────────────────────
+    const additionalDescs = [];
+    for (const addOn of additionalProducts) {
+      let addOnDesc = addOn.desc || addOn.name;
+      if (addOn.imageBase64) {
+        try {
+          const addOnResult = await model.generateContent([
+            { inlineData: { mimeType: addOn.imageMimeType || 'image/webp', data: addOn.imageBase64 } },
+            `Describe this furniture piece "${addOn.name}" in 3-5 sentences. Focus on: shape, material, color, and key structural features. Be factual and specific.`,
+          ]);
+          addOnDesc = addOnResult.response.text();
+        } catch {}
+      }
+      additionalDescs.push({ name: addOn.name, desc: addOnDesc });
+    }
+
     // ── Step 2: Build the Imagen generation prompt ───────────────────────────
     const colourNote = selectedColour
       ? `Color: The piece should be in a ${selectedColour} colourway/finish. `
@@ -105,23 +122,45 @@ app.post('/api/generate-image', async (req, res) => {
       ? `Size: It is the ${selectedSize} size variant. `
       : '';
 
+    const hasAddOns = additionalDescs.length > 0;
+
+    const subjectBlock = hasAddOns
+      ? (
+        `SCENE ITEMS — all must appear in the final image:\n` +
+        `PRIMARY — ${productName}: ${colourNote}${sizeNote}\n${detailedVisualDesc}\n\n` +
+        additionalDescs.map(a => `ADDITIONAL — ${a.name}:\n${a.desc}`).join('\n\n')
+      )
+      : (
+        `SUBJECT: ${productName}${productCategory ? ` — ${productCategory}` : ''}. ` +
+        `${colourNote}${sizeNote}\n` +
+        `EXACT STRUCTURAL DETAILS (MUST FOLLOW PRECISELY):\n${detailedVisualDesc}`
+      );
+
+    const compositionBlock = hasAddOns
+      ? (
+        `COMPOSITION: All ${additionalDescs.length + 1} furniture pieces must be fully visible and ` +
+        `naturally arranged together in the room as a cohesive set. ` +
+        `Each piece is clearly identifiable — no item cropped, hidden, or omitted.`
+      )
+      : (
+        `COMPOSITION: ` +
+        `The ${productName} must be the hero subject, positioned at eye-level or slight 3/4 angle. ` +
+        `Full piece must be clearly visible — no cropping, no occlusion. ` +
+        `Show the exact leg shape, material texture, and silhouette as described above.`
+      );
+
     const prompt =
       `PHOTOREALISTIC INTERIOR PHOTOGRAPH. Professional furniture catalog shot for a Southeast Asian design brand.\n\n` +
-      `SUBJECT: ${productName}${productCategory ? ` — ${productCategory}` : ''}. ` +
-      `${colourNote}${sizeNote}\n` +
-      `EXACT STRUCTURAL DETAILS (MUST FOLLOW PRECISELY):\n${detailedVisualDesc}\n\n` +
+      `${subjectBlock}\n\n` +
       `SETTING: ${roomDesc}.\n\n` +
-      `COMPOSITION: ` +
-      `The ${productName} must be the hero subject, positioned at eye-level or slight 3/4 angle. ` +
-      `Full piece must be clearly visible — no cropping, no occlusion. ` +
-      `Show the exact leg shape, material texture, and silhouette as described above.\n\n` +
+      `${compositionBlock}\n\n` +
       `LIGHTING: Natural soft light matching the room description. Gentle shadows for depth.\n\n` +
       `AESTHETIC: Clean, warm, minimalist Japandi-influenced Southeast Asian interior — Kinfolk magazine or Muji catalogue quality.\n\n` +
       `CRITICAL: ` +
       `Must be photorealistic with zero CGI appearance. ` +
       `No people, animals, text, logos, or watermarks. ` +
-      `The furniture structure MUST match the detailed description exactly — especially legs, proportions, materials, and distinctive features. ` +
-      `No creative reinterpretation of the furniture shape — replicate the described structure faithfully.`;
+      `All furniture structures MUST match the detailed descriptions exactly — especially legs, proportions, materials, and distinctive features. ` +
+      `No creative reinterpretation — replicate the described structures faithfully.`;
 
     const result = await ai.models.generateImages({
       model: 'imagen-4.0-generate-001',

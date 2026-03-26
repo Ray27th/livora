@@ -97,6 +97,8 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, onOpenDetail }) => 
   const [recVizLoading, setRecVizLoading] = useState(false);
   const [recImageResult, setRecImageResult] = useState(null);
   const [recVizError, setRecVizError] = useState(null);
+  const [bundleAddOns, setBundleAddOns] = useState([]);
+  const [recSplashItem, setRecSplashItem] = useState(null);
 
   // AI Visualizer state
   const [vizOpen, setVizOpen] = useState(false);
@@ -107,6 +109,21 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, onOpenDetail }) => 
   const [vizError, setVizError] = useState(null);
   const [vizStep, setVizStep] = useState("input");
 
+  const fetchImgBase64 = async (url) => {
+    try {
+      const imgRes = await fetch(url);
+      if (!imgRes.ok) return null;
+      const blob = await imgRes.blob();
+      const mimeType = blob.type || "image/webp";
+      const base64 = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(",")[1]);
+        reader.readAsDataURL(blob);
+      });
+      return { base64, mimeType };
+    } catch { return null; }
+  };
+
   const generate = async () => {
     if (!roomDesc.trim()) return;
     setLoading(true);
@@ -115,19 +132,24 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, onOpenDetail }) => 
       let productImageBase64 = null;
       let productImageMimeType = null;
       if (product.image) {
-        try {
-          const imgRes = await fetch(product.image);
-          if (imgRes.ok) {
-            const blob = await imgRes.blob();
-            productImageMimeType = blob.type || "image/webp";
-            productImageBase64 = await new Promise((resolve) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result.split(",")[1]);
-              reader.readAsDataURL(blob);
-            });
-          }
-        } catch {}
+        const result = await fetchImgBase64(product.image);
+        if (result) { productImageBase64 = result.base64; productImageMimeType = result.mimeType; }
       }
+
+      const additionalProducts = bundleAddOns.length > 0
+        ? await Promise.all(bundleAddOns.map(async (addOn) => {
+            const imgData = addOn.image ? await fetchImgBase64(addOn.image) : null;
+            return {
+              name: addOn.name,
+              desc: addOn.desc,
+              category: addOn.category,
+              tags: addOn.tags,
+              imageBase64: imgData?.base64 || null,
+              imageMimeType: imgData?.mimeType || null,
+            };
+          }))
+        : undefined;
+
       const res = await fetch("/api/generate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -141,6 +163,7 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, onOpenDetail }) => 
           roomDesc,
           productImageBase64,
           productImageMimeType,
+          additionalProducts,
         }),
       });
       if (!res.ok) throw new Error(await res.text());
@@ -155,6 +178,7 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, onOpenDetail }) => 
 
   const handleAddToCart = () => {
     onAddToCart(product);
+    bundleAddOns.forEach(item => onAddToCart(item));
     onClose();
   };
 
@@ -167,6 +191,7 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, onOpenDetail }) => 
     });
     setRecVizOpen(false);
     setRecImageResult(null);
+    setRecSplashItem(null);
   };
 
   const generateRecViz = async () => {
@@ -453,7 +478,9 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, onOpenDetail }) => 
                   {vizStep === "input" && (
                     <>
                       <p style={{ fontSize: "13px", color: "#666666", lineHeight: 1.6, margin: "0 0 12px", fontFamily: "Arial, sans-serif" }}>
-                        Describe your room and see the <strong style={{ color: "#1A1A1A" }}>{product.name}</strong> placed naturally in your space.
+                        Describe your room and see the <strong style={{ color: "#1A1A1A" }}>{product.name}</strong>
+                        {bundleAddOns.length > 0 && <> + <strong style={{ color: "#FF6B35" }}>{bundleAddOns.length} bundle item{bundleAddOns.length > 1 ? "s" : ""}</strong></>}
+                        {" "}placed naturally in your space.
                       </p>
 
                       {/* Presets */}
@@ -508,7 +535,7 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, onOpenDetail }) => 
                       }}>
                         {loading
                           ? <><span style={{ animation: "spin 1s linear infinite", display: "inline-block" }}>◌</span> GENERATING…</>
-                          : "GENERATE VISUALIZATION"
+                          : bundleAddOns.length > 0 ? "GENERATE BUNDLE VISUALIZATION" : "GENERATE VISUALIZATION"
                         }
                       </button>
                     </>
@@ -607,48 +634,127 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, onOpenDetail }) => 
                     const rec = recommendedProducts[recIndex];
                     return (
                       <div>
-                        <div
-                          onClick={() => onOpenDetail && onOpenDetail(rec)}
-                          style={{
-                            display: "flex",
-                            gap: "14px",
-                            alignItems: "center",
-                            marginBottom: "14px",
-                            cursor: "pointer",
-                          }}
-                        >
-                          <div style={{
-                            background: "#FFFFFF",
-                            borderRadius: "6px",
-                            width: "100px",
-                            height: "100px",
-                            border: "2px solid #1A1A1A",
-                            overflow: "hidden",
-                            flexShrink: 0,
-                          }}>
-                            <img src={rec.image} alt={rec.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        {recSplashItem?.id === rec.id ? (
+                          /* ── SPLASH QUICK-VIEW ── */
+                          <div style={{ marginBottom: "14px" }}>
+                            <button
+                              onClick={() => setRecSplashItem(null)}
+                              style={{
+                                background: "none", border: "none", cursor: "pointer",
+                                fontSize: "11px", fontWeight: 800, color: "#666666",
+                                fontFamily: "'Arial Black', Arial, sans-serif",
+                                textTransform: "uppercase", marginBottom: "10px",
+                                padding: "0", display: "flex", alignItems: "center", gap: "4px",
+                              }}
+                            >‹ BACK</button>
+                            <div style={{
+                              background: "#FFFFFF", borderRadius: "6px",
+                              border: "2px solid #1A1A1A", overflow: "hidden", marginBottom: "10px",
+                            }}>
+                              <img src={rec.image} alt={rec.name} style={{ width: "100%", height: "160px", objectFit: "cover", display: "block" }} />
+                            </div>
+                            <div style={{ fontSize: "14px", fontWeight: 900, color: "#1A1A1A", textTransform: "uppercase", marginBottom: "4px", fontFamily: "'Arial Black', Arial, sans-serif" }}>{rec.name}</div>
+                            <div style={{ fontSize: "20px", fontWeight: 900, color: "#FF6B35", marginBottom: "6px", fontFamily: "'Arial Black', Arial, sans-serif" }}>{rec.price}</div>
+                            <div style={{ fontSize: "12px", color: "#666666", lineHeight: 1.5, fontFamily: "Arial, sans-serif", marginBottom: "10px" }}>{rec.desc}</div>
+                            {rec.tags && (
+                              <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginBottom: "12px" }}>
+                                {rec.tags.map(t => (
+                                  <span key={t} style={{ background: "#1A1A1A", color: "#FFFFFF", borderRadius: "4px", padding: "3px 8px", fontSize: "9px", fontWeight: 700, textTransform: "uppercase" }}>{t}</span>
+                                ))}
+                              </div>
+                            )}
+                            <div style={{ display: "flex", gap: "8px" }}>
+                              <button
+                                onClick={() => {
+                                  setBundleAddOns(prev =>
+                                    prev.find(i => i.id === rec.id)
+                                      ? prev.filter(i => i.id !== rec.id)
+                                      : [...prev, rec]
+                                  );
+                                  setRecSplashItem(null);
+                                }}
+                                style={{
+                                  flex: 1,
+                                  background: bundleAddOns.find(i => i.id === rec.id) ? "#E0E0E0" : "#FF6B35",
+                                  color: bundleAddOns.find(i => i.id === rec.id) ? "#666666" : "#FFFFFF",
+                                  border: "2px solid #1A1A1A", borderRadius: "6px", padding: "9px",
+                                  fontSize: "10px", fontWeight: 800, cursor: "pointer",
+                                  fontFamily: "'Arial Black', Arial, sans-serif", textTransform: "uppercase",
+                                  transition: "all 0.15s",
+                                }}
+                              >
+                                {bundleAddOns.find(i => i.id === rec.id) ? "✓ ADDED TO BUNDLE" : "+ ADD TO BUNDLE"}
+                              </button>
+                              <button
+                                onClick={() => { setRecSplashItem(null); onOpenDetail && onOpenDetail(rec); }}
+                                style={{
+                                  background: "#F5F5F5", color: "#1A1A1A",
+                                  border: "2px solid #1A1A1A", borderRadius: "6px", padding: "9px 12px",
+                                  fontSize: "10px", fontWeight: 800, cursor: "pointer",
+                                  fontFamily: "'Arial Black', Arial, sans-serif", textTransform: "uppercase",
+                                  transition: "all 0.15s",
+                                }}
+                                onMouseEnter={e => { e.currentTarget.style.background = "#1A1A1A"; e.currentTarget.style.color = "#FFFFFF"; }}
+                                onMouseLeave={e => { e.currentTarget.style.background = "#F5F5F5"; e.currentTarget.style.color = "#1A1A1A"; }}
+                              >VIEW ALL</button>
+                            </div>
                           </div>
-                          <div style={{ flex: 1 }}>
+                        ) : (
+                          /* ── COMPACT VIEW ── */
+                          <div
+                            onClick={() => setRecSplashItem(rec)}
+                            style={{
+                              display: "flex",
+                              gap: "14px",
+                              alignItems: "center",
+                              marginBottom: "14px",
+                              cursor: "pointer",
+                            }}
+                          >
                             <div style={{
-                              fontSize: "13px",
-                              fontWeight: 900,
-                              color: "#1A1A1A",
-                              textTransform: "uppercase",
-                              marginBottom: "4px",
-                            }}>{rec.name}</div>
-                            <div style={{
-                              fontSize: "11px",
-                              color: "#666666",
-                              fontFamily: "Arial, sans-serif",
-                              marginBottom: "6px",
-                            }}>{rec.desc}</div>
-                            <div style={{
-                              fontSize: "16px",
-                              fontWeight: 900,
-                              color: "#FF6B35",
-                            }}>{rec.price}</div>
+                              background: "#FFFFFF",
+                              borderRadius: "6px",
+                              width: "100px",
+                              height: "100px",
+                              border: "2px solid #1A1A1A",
+                              overflow: "hidden",
+                              flexShrink: 0,
+                              position: "relative",
+                            }}>
+                              <img src={rec.image} alt={rec.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                              {bundleAddOns.find(i => i.id === rec.id) && (
+                                <div style={{
+                                  position: "absolute", top: "4px", right: "4px",
+                                  background: "#FF6B35", borderRadius: "50%",
+                                  width: "20px", height: "20px",
+                                  display: "flex", alignItems: "center", justifyContent: "center",
+                                  fontSize: "10px", color: "#FFFFFF", fontWeight: 800,
+                                }}>✓</div>
+                              )}
+                            </div>
+                            <div style={{ flex: 1 }}>
+                              <div style={{
+                                fontSize: "13px",
+                                fontWeight: 900,
+                                color: "#1A1A1A",
+                                textTransform: "uppercase",
+                                marginBottom: "4px",
+                              }}>{rec.name}</div>
+                              <div style={{
+                                fontSize: "11px",
+                                color: "#666666",
+                                fontFamily: "Arial, sans-serif",
+                                marginBottom: "6px",
+                              }}>{rec.desc}</div>
+                              <div style={{
+                                fontSize: "16px",
+                                fontWeight: 900,
+                                color: "#FF6B35",
+                              }}>{rec.price}</div>
+                            </div>
+                            <span style={{ fontSize: "16px", color: "#999999" }}>›</span>
                           </div>
-                        </div>
+                        )}
 
                         {/* AI Visualize button */}
                         <button
@@ -822,6 +928,47 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, onOpenDetail }) => 
               </div>
             )}
 
+            {/* ── Bundle Summary ── */}
+            {bundleAddOns.length > 0 && (
+              <div>
+                <div style={{ fontSize: "11px", letterSpacing: "0.15em", color: "#FF6B35", textTransform: "uppercase", marginBottom: "12px", fontWeight: 800 }}>
+                  YOUR BUNDLE — {bundleAddOns.length + 1} Items
+                </div>
+                <div style={{
+                  background: "#FFF8F5",
+                  border: "2px solid #FF6B35",
+                  borderRadius: "8px",
+                  padding: "12px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <img src={product.image} alt={product.name} style={{ width: "36px", height: "36px", objectFit: "cover", borderRadius: "4px", border: "2px solid #1A1A1A", flexShrink: 0 }} />
+                    <div style={{ flex: 1, fontSize: "11px", fontWeight: 800, color: "#1A1A1A", textTransform: "uppercase", fontFamily: "'Arial Black', Arial, sans-serif" }}>{product.name}</div>
+                    <div style={{ fontSize: "11px", fontWeight: 900, color: "#FF6B35" }}>{product.price}</div>
+                  </div>
+                  {bundleAddOns.map(item => (
+                    <div key={item.id} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <img src={item.image} alt={item.name} style={{ width: "36px", height: "36px", objectFit: "cover", borderRadius: "4px", border: "2px solid #E0E0E0", flexShrink: 0 }} />
+                      <div style={{ flex: 1, fontSize: "11px", fontWeight: 800, color: "#1A1A1A", textTransform: "uppercase", fontFamily: "'Arial Black', Arial, sans-serif" }}>{item.name}</div>
+                      <div style={{ fontSize: "11px", fontWeight: 900, color: "#FF6B35" }}>{item.price}</div>
+                      <button
+                        onClick={() => setBundleAddOns(prev => prev.filter(i => i.id !== item.id))}
+                        style={{
+                          background: "none", border: "none", cursor: "pointer",
+                          color: "#999999", fontSize: "14px", padding: "2px",
+                          lineHeight: 1, transition: "color 0.15s", flexShrink: 0,
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.color = "#B94040"}
+                        onMouseLeave={e => e.currentTarget.style.color = "#999999"}
+                      >✕</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <hr style={{ border: "none", borderTop: "2px solid #1A1A1A", margin: "0 0 16px" }} />
 
             {/* ── Quantity + Add to Cart ── */}
@@ -881,7 +1028,7 @@ const ProductDetailModal = ({ product, onClose, onAddToCart, onOpenDetail }) => 
                 onMouseEnter={e => e.currentTarget.style.background = "#333333"}
                 onMouseLeave={e => e.currentTarget.style.background = "#1A1A1A"}
               >
-                <CheckIcon /> ADD TO CART — {product.price}
+                <CheckIcon /> {bundleAddOns.length > 0 ? `ADD BUNDLE (${bundleAddOns.length + 1} ITEMS)` : `ADD TO CART — ${product.price}`}
               </button>
             </div>
 
