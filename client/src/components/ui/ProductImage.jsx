@@ -61,19 +61,48 @@ export const FurnitureIcon = ({ shape, color, size = 52 }) => {
   return null;
 };
 
-const ProductImage = ({ product, objectFit = "contain" }) => {
+const ProductImage = ({ alt, className, objectFit = "contain", product, style }) => {
   const [errored, setErrored] = useState(false);
+
   if (product.image && !errored) {
     return (
       <img
+        className={className}
         src={product.image}
-        alt={product.name}
+        alt={alt || product.name}
         onError={() => setErrored(true)}
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit }}
+        style={{ height: "100%", inset: 0, objectFit, position: "absolute", width: "100%", ...style }}
       />
     );
   }
-  return <FurnitureIcon shape={product.shape} color={product.color} size={52} />;
+
+  if (product.shape && product.color) {
+    return <FurnitureIcon shape={product.shape} color={product.color} size={52} />;
+  }
+
+  return (
+    <div
+      className={className}
+      style={{
+        alignItems: "center",
+        background: "rgba(255,255,255,0.72)",
+        color: "var(--color-ink-soft)",
+        display: "flex",
+        fontFamily: "var(--font-display)",
+        fontSize: "1.2rem",
+        fontWeight: 700,
+        height: "100%",
+        inset: 0,
+        justifyContent: "center",
+        letterSpacing: "-0.03em",
+        position: "absolute",
+        width: "100%",
+        ...style,
+      }}
+    >
+      {product.name}
+    </div>
+  );
 };
 
 export default ProductImage;

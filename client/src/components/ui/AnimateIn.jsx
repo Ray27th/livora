@@ -1,6 +1,6 @@
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const AnimateIn = ({ children, delay = 0, style = {}, distance = 24 }) => {
+const AnimateIn = ({ children, className = "", delay = 0, distance = 24, style = {} }) => {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
 
@@ -22,6 +22,7 @@ const AnimateIn = ({ children, delay = 0, style = {}, distance = 24 }) => {
 
   return (
     <div
+      className={className}
       ref={ref}
       style={{
         opacity: visible ? 1 : 0,
