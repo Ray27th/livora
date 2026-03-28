@@ -9,7 +9,13 @@ export const drops = [
     story:
       "This edit leans into the pieces you feel fastest: a chair that folds away, a shelf that clears the floor, and softer seating for relaxed hosting.",
     image: "/images/room-starter.webp",
-    productSlugs: ["bugis-folding-chair", "tanjong-floor-cushion", "yishun-wall-shelf"],
+    productSlugs: [
+      "bugis-folding-chair",
+      "tanjong-floor-cushion",
+      "yishun-wall-shelf",
+      "commonwealth-nesting-side-table",
+      "katong-counter-stool",
+    ],
   },
   {
     slug: "entryway-flip",
@@ -21,7 +27,7 @@ export const drops = [
     story:
       "The next drop is about getting the first few steps of your home sorted — cleaner arrivals, better bag storage, and less visual noise by the door.",
     image: "/images/entryway-reset.webp",
-    productSlugs: ["ang-mo-kio-coat-rack", "bedok-shoe-rack"],
+    productSlugs: ["ang-mo-kio-coat-rack", "bedok-shoe-rack", "seletar-entry-bench-rack"],
   },
   {
     slug: "study-corner",
@@ -33,6 +39,6 @@ export const drops = [
     story:
       "Expect slim desks, warm task lighting, and simple accessories that make a small desk zone feel deliberate instead of temporary.",
     image: "/images/wfh-basic.webp",
-    productSlugs: ["queenstown-desk-lamp"],
+    productSlugs: ["queenstown-desk-lamp", "upper-thomson-task-chair"],
   },
 ];

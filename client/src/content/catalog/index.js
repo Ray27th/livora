@@ -1,7 +1,7 @@
+import { formatPrice } from "../../theme.js";
 import { categories } from "./categories.js";
 import { drops } from "./drops.js";
 import { rawProducts } from "./products.js";
-import { formatPrice } from "../../theme.js";
 
 export { categories, drops };
 
@@ -23,14 +23,28 @@ export const featuredProducts = products.filter((product) =>
     "paya-laptop-desk",
     "joo-chiat-bedside-table",
     "bedok-shoe-rack",
-    "tanjong-floor-cushion",
-    "marina-tray-table",
-    "hougang-cube-bin",
+    "commonwealth-nesting-side-table",
+    "tiong-bahru-bistro-table",
+    "bukit-timah-accent-lounge-chair",
+    "upper-thomson-task-chair",
+    "seletar-entry-bench-rack",
   ].includes(product.slug)
 );
 
+export const valueProducts = [...products]
+  .filter((product) => product.stockStatus !== "sold_out")
+  .sort((a, b) => a.price - b.price)
+  .slice(0, 6);
+
+export const catalogStats = {
+  categoryCount: categories.length,
+  totalProducts: products.length,
+};
+
 export const liveDrop = drops.find((drop) => drop.status === "live");
-export const liveDropProducts = liveDrop ? liveDrop.productSlugs.map((slug) => productsBySlug[slug]).filter(Boolean) : [];
+export const liveDropProducts = liveDrop
+  ? liveDrop.productSlugs.map((slug) => productsBySlug[slug]).filter(Boolean)
+  : [];
 
 export const getProductBySlug = (slug) => productsBySlug[slug];
 
