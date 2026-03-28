@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 
-import { categories } from "../content/catalog/categories.js";
-import { footerGroups, supportChannels, announcement } from "../content/site/index.js";
 import { useStore } from "../app/store.js";
+import { categories } from "../content/catalog/categories.js";
+import { announcement, footerGroups, supportChannels } from "../content/site/index.js";
+import { formatPrice } from "../theme.js";
+import CartToast from "./CartToast.jsx";
 import {
   ArrowUpRightIcon,
   CartIcon,
@@ -21,11 +23,18 @@ const primaryNav = [
   { label: "Contact", href: "/contact" },
 ];
 
+const headerTrustPoints = [
+  "GST included",
+  "3 to 5 day delivery",
+  "DM support first",
+];
+
 export default function Layout() {
   const location = useLocation();
   const {
     announcementOpen,
     cart,
+    cartFeedback,
     dismissAnnouncement,
     mobileNavOpen,
     setMobileNavOpen,
@@ -34,6 +43,10 @@ export default function Layout() {
   useEffect(() => {
     setMobileNavOpen(false);
   }, [location.pathname, setMobileNavOpen]);
+
+  const cartMeta = cart.count
+    ? `${cart.count} item${cart.count === 1 ? "" : "s"} · ${formatPrice(cart.subtotal)}`
+    : "Ready when you are";
 
   return (
     <div className="site-shell">
@@ -55,38 +68,61 @@ export default function Layout() {
 
       <header className={`site-header ${announcementOpen ? "site-header--with-banner" : ""}`}>
         <div className="site-header__inner">
-          <Link aria-label="one59 home" className="brand" to="/">
-            <span className="brand__name">one59</span>
-            <span className="brand__tag">Singapore furniture under S$159</span>
-          </Link>
-
-          <nav aria-label="Primary" className="site-nav">
-            {primaryNav.map((item) => (
-              <NavLink
-                className={({ isActive }) => `site-nav__link${isActive ? " active" : ""}`}
-                key={item.href}
-                to={item.href}
-              >
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
-
-          <div className="site-header__actions">
-            <Link aria-label="Cart" className="cart-pill" to="/cart">
-              <CartIcon />
-              <span>{cart.count}</span>
+          <div className="site-header__row">
+            <Link aria-label="one59 home" className="brand" to="/">
+              <div className="brand__lockup">
+                <span className="brand__name">one59</span>
+                <span className="brand__tag">Singapore furniture under S$159</span>
+              </div>
+              <span className="brand__signal">Factory-direct, no middlemen, no fake markdown theatre.</span>
             </Link>
 
-            <button
-              aria-expanded={mobileNavOpen}
-              aria-label="Toggle navigation"
-              className="icon-btn mobile-menu"
-              onClick={() => setMobileNavOpen((isOpen) => !isOpen)}
-              type="button"
-            >
-              {mobileNavOpen ? <CloseIcon /> : <MenuIcon />}
-            </button>
+            <nav aria-label="Primary" className="site-nav">
+              {primaryNav.map((item) => (
+                <NavLink
+                  className={({ isActive }) => `site-nav__link${isActive ? " active" : ""}`}
+                  key={item.href}
+                  to={item.href}
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </nav>
+
+            <div className="site-header__actions">
+              <Link aria-label="Cart" className={`cart-pill${cartFeedback ? " cart-pill--updated" : ""}`} to="/cart">
+                <CartIcon />
+                <div className="cart-pill__copy">
+                  <span className="cart-pill__label">Cart</span>
+                  <span className="cart-pill__meta">{cartMeta}</span>
+                </div>
+                <span className="cart-pill__count">{cart.count}</span>
+              </Link>
+
+              <button
+                aria-expanded={mobileNavOpen}
+                aria-label="Toggle navigation"
+                className="icon-btn mobile-menu"
+                onClick={() => setMobileNavOpen((isOpen) => !isOpen)}
+                type="button"
+              >
+                {mobileNavOpen ? <CloseIcon /> : <MenuIcon />}
+              </button>
+            </div>
+          </div>
+
+          <div className="site-header__meta">
+            <div className="badge-row site-header__trust-row">
+              {headerTrustPoints.map((point) => (
+                <span className="badge" key={point}>
+                  {point}
+                </span>
+              ))}
+            </div>
+
+            <Link className="site-header__support" to="/contact">
+              Support & policy details <ArrowUpRightIcon size={14} />
+            </Link>
           </div>
 
           {mobileNavOpen ? (
@@ -100,10 +136,20 @@ export default function Layout() {
                   {item.label}
                 </NavLink>
               ))}
+
+              <div className="badge-row">
+                {headerTrustPoints.map((point) => (
+                  <span className="badge" key={point}>
+                    {point}
+                  </span>
+                ))}
+              </div>
             </div>
           ) : null}
         </div>
       </header>
+
+      <CartToast />
 
       <main className="site-main">
         <Outlet />
@@ -114,14 +160,15 @@ export default function Layout() {
           <div className="footer-grid">
             <div className="footer-grid__brand">
               <div className="brand">
-                <span className="brand__name">one59</span>
-                <span className="brand__tag">GST included · mainland Singapore only</span>
+                <div className="brand__lockup">
+                  <span className="brand__name">one59</span>
+                  <span className="brand__tag">GST included · mainland Singapore only</span>
+                </div>
               </div>
 
               <p className="body-copy">
-                Factory-direct furniture for Singapore homes with a mixed evergreen and drops
-                catalogue, guest checkout, and policy surfaces that say exactly what the product
-                truth allows.
+                Calm, compact furniture built for Singapore homes — with guest checkout, clear policies,
+                and a value story that does not need fake before-and-after prices to make sense.
               </p>
 
               <div className="badge-row">
