@@ -16,6 +16,7 @@ export default function ProductCard({ product, showCategory = false }) {
   const { getCartQuantity } = useStore();
   const quantityInCart = getCartQuantity(product);
   const accent = `var(--tone-${product.tone})`;
+  const metaLine = showCategory ? `${product.category.name} · ${product.sku}` : product.sku;
 
   return (
     <article className="product-card" style={{ "--card-accent": accent }}>
@@ -31,15 +32,16 @@ export default function ProductCard({ product, showCategory = false }) {
       <div className="product-card__body">
         <div className="product-card__top">
           <div className="product-card__title-wrap">
-            <p className="fine-copy product-card__sku">
-              {product.sku}
-              {showCategory ? ` · ${product.category.name}` : ""}
-            </p>
+            <p className="fine-copy product-card__sku">{metaLine}</p>
 
             <Link className="product-card__title-link" to={`/product/${product.slug}`}>
               <h3 className="product-card__title">{product.name}</h3>
-              <ArrowRightIcon size={14} />
+              <span className="product-card__title-icon">
+                <ArrowRightIcon size={14} />
+              </span>
             </Link>
+
+            <p className="fine-copy product-card__finish">{product.finish}</p>
           </div>
 
           <div className="product-card__price-block">
@@ -63,8 +65,8 @@ export default function ProductCard({ product, showCategory = false }) {
           </div>
 
           <div className="product-card__spec">
-            <span className="fine-copy">Room fit</span>
-            <span className="body-copy">{product.category.name}</span>
+            <span className="fine-copy">Dimensions</span>
+            <span className="body-copy">{product.dimensions}</span>
           </div>
         </div>
 
@@ -75,12 +77,16 @@ export default function ProductCard({ product, showCategory = false }) {
               <ArrowRightIcon size={14} />
             </Link>
           ) : (
-            <AddToCartButton label="Add to cart" product={product} />
+            <AddToCartButton label="Add to cart" product={product} variant="accent" />
           )}
 
           <Link className="btn btn--ghost" to={`/product/${product.slug}`}>
             View details
           </Link>
+        </div>
+
+        <div className="product-card__footer-note">
+          <span className="fine-copy">Guest checkout only · Mainland Singapore delivery</span>
         </div>
       </div>
     </article>

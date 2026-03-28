@@ -82,27 +82,45 @@ export const FurnitureIcon = ({ shape, color, size = 52 }) => {
 
 const ProductImage = ({ alt, className, objectFit = "contain", product, style }) => {
   const [errored, setErrored] = useState(false);
+  const resolvedClassName = ["product-image", className].filter(Boolean).join(" ");
+  const frameStyle = { height: "100%", inset: 0, position: "absolute", width: "100%", ...style };
 
   if (product.image && !errored) {
     return (
       <img
-        className={className}
+        className={resolvedClassName}
+        decoding="async"
+        loading="lazy"
         src={product.image}
         alt={alt || product.name}
         onError={() => setErrored(true)}
-        style={{ height: "100%", inset: 0, objectFit, position: "absolute", width: "100%", ...style }}
+        style={{ ...frameStyle, objectFit }}
       />
     );
   }
 
   if (product.shape && product.color) {
-    return <FurnitureIcon shape={product.shape} color={product.color} size={52} />;
+    return (
+      <div
+        className={`${resolvedClassName} product-image--illustration`.trim()}
+        style={{
+          ...frameStyle,
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "center",
+          padding: "var(--space-6)",
+        }}
+      >
+        <FurnitureIcon shape={product.shape} color={product.color} size={52} />
+      </div>
+    );
   }
 
   return (
     <div
-      className={className}
+      className={`${resolvedClassName} product-image--fallback`.trim()}
       style={{
+        ...frameStyle,
         alignItems: "center",
         background: "rgba(255,255,255,0.72)",
         color: "var(--color-ink-soft)",
@@ -110,13 +128,10 @@ const ProductImage = ({ alt, className, objectFit = "contain", product, style })
         fontFamily: "var(--font-display)",
         fontSize: "1.2rem",
         fontWeight: 700,
-        height: "100%",
-        inset: 0,
         justifyContent: "center",
         letterSpacing: "-0.03em",
-        position: "absolute",
-        width: "100%",
-        ...style,
+        padding: "var(--space-5)",
+        textAlign: "center",
       }}
     >
       {product.name}

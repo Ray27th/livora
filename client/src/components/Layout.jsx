@@ -26,7 +26,7 @@ const primaryNav = [
 const headerTrustPoints = [
   "GST included",
   "3 to 5 day delivery",
-  "DM support first",
+  "Guest checkout only",
 ];
 
 export default function Layout() {
@@ -53,15 +53,23 @@ export default function Layout() {
       {announcementOpen ? (
         <div className="announcement">
           <div className="announcement__inner">
-            <span>{announcement}</span>
-            <button
-              aria-label="Dismiss announcement"
-              className="announcement__dismiss"
-              onClick={dismissAnnouncement}
-              type="button"
-            >
-              <CloseIcon size={16} />
-            </button>
+            <div className="announcement__copy">
+              <span className="announcement__label">Now browsing</span>
+              <span>{announcement}</span>
+            </div>
+
+            <div className="announcement__meta">
+              <span className="announcement__chip">GST included</span>
+              <span className="announcement__chip">3 to 5 day delivery</span>
+              <button
+                aria-label="Dismiss announcement"
+                className="announcement__dismiss"
+                onClick={dismissAnnouncement}
+                type="button"
+              >
+                <CloseIcon size={16} />
+              </button>
+            </div>
           </div>
         </div>
       ) : null}
@@ -91,12 +99,17 @@ export default function Layout() {
 
             <div className="site-header__actions">
               <Link aria-label="Cart" className={`cart-pill${cartFeedback ? " cart-pill--updated" : ""}`} to="/cart">
-                <CartIcon />
+                <span className="cart-pill__icon">
+                  <CartIcon />
+                </span>
                 <div className="cart-pill__copy">
                   <span className="cart-pill__label">Cart</span>
                   <span className="cart-pill__meta">{cartMeta}</span>
                 </div>
-                <span className="cart-pill__count">{cart.count}</span>
+                <span className="cart-pill__count-wrap">
+                  <span className="cart-pill__count-label">Items</span>
+                  <span className="cart-pill__count">{cart.count}</span>
+                </span>
               </Link>
 
               <button
@@ -121,7 +134,7 @@ export default function Layout() {
             </div>
 
             <Link className="site-header__support" to="/contact">
-              Support & policy details <ArrowUpRightIcon size={14} />
+              Shipping, returns & support <ArrowUpRightIcon size={14} />
             </Link>
           </div>
 
@@ -156,7 +169,7 @@ export default function Layout() {
       </main>
 
       <footer className="site-footer section--tight">
-        <div className="site-footer__inner surface" style={{ padding: "var(--space-8)" }}>
+        <div className="site-footer__inner site-footer__panel surface">
           <div className="footer-grid">
             <div className="footer-grid__brand">
               <div className="brand">
