@@ -1,17 +1,19 @@
-export const COL_DARK = "#1A1A1A";
-export const COL_ORANGE = "#FF6B35";
-export const COL_WHITE = "#FFFFFF";
-export const COL_LIGHT = "#F5F5F5";
-export const COL_GREEN = "#2E6B3E";
+export const currencyFormatter = new Intl.NumberFormat("en-SG", {
+  style: "currency",
+  currency: "SGD",
+  maximumFractionDigits: 0,
+});
 
-export const FONT_HEAD = "'Arial Black', Arial, sans-serif";
-export const FONT_BODY = "Arial, sans-serif";
+export const formatPrice = (amount) => currencyFormatter.format(amount);
 
-export const SHADOW = `4px 4px 0px ${COL_DARK}`;
+export const dropStatusLabels = {
+  live: "Live now",
+  upcoming: "Upcoming",
+  ended: "Archive",
+};
 
-export const badgeColor = (badge) => {
-  if (badge === "New") return COL_DARK;
-  if (badge === "Sale") return COL_ORANGE;
-  if (badge === "Ships Fast") return COL_GREEN;
-  return COL_ORANGE;
+export const stockStatusLabels = {
+  in_stock: "Ready to ship",
+  low_stock: "Almost gone",
+  sold_out: "Sold out",
 };
