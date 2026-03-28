@@ -7,14 +7,22 @@ import EmptyState from "../components/EmptyState.jsx";
 import ProductCard from "../components/ProductCard.jsx";
 import QuantityStepper from "../components/QuantityStepper.jsx";
 import SectionHeading from "../components/SectionHeading.jsx";
+import AddToCartButton from "../components/AddToCartButton.jsx";
+import ProductImage from "../components/ui/ProductImage.jsx";
 import AnimateIn from "../components/ui/AnimateIn.jsx";
 import { getAlternativeProducts, getProductBySlug } from "../content/catalog/index.js";
 import { stockStatusLabels } from "../theme.js";
-import ProductImage from "../components/ui/ProductImage.jsx";
+
+const trustItems = [
+  "GST already included in the displayed price",
+  "3 to 5 day delivery across mainland Singapore",
+  "7-day returns with customer-paid change-of-mind return delivery",
+  "Instagram DM first, email fallback when you need longer notes",
+];
 
 export default function ProductPage() {
   const { slug } = useParams();
-  const { addToCart } = useStore();
+  const { cartFeedback, getCartQuantity } = useStore();
   const [quantity, setQuantity] = useState(1);
 
   const product = getProductBySlug(slug);
@@ -39,6 +47,8 @@ export default function ProductPage() {
 
   const alternatives = getAlternativeProducts(product);
   const accent = `var(--tone-${product.tone})`;
+  const quantityInCart = getCartQuantity(product);
+  const wasJustAdded = cartFeedback?.itemKey === (product.sku || product.slug);
 
   return (
     <section className="section">
@@ -61,41 +71,33 @@ export default function ProductPage() {
             <div className="detail-strip">
               <div className="detail-strip__card">
                 <p className="fine-copy">Delivery</p>
-                <h3 className="card-title" style={{ fontSize: "1.2rem", margin: 0 }}>
-                  3 to 5 days
-                </h3>
+                <h3 className="detail-strip__title">3 to 5 days</h3>
                 <p className="body-copy">Mainland Singapore only.</p>
               </div>
 
               <div className="detail-strip__card">
                 <p className="fine-copy">Returns</p>
-                <h3 className="card-title" style={{ fontSize: "1.2rem", margin: 0 }}>
-                  7 days
-                </h3>
-                <p className="body-copy">Change-of-mind returns are customer-paid.</p>
+                <h3 className="detail-strip__title">7 days</h3>
+                <p className="body-copy">Change-of-mind return delivery is customer-paid.</p>
               </div>
 
               <div className="detail-strip__card">
                 <p className="fine-copy">Support</p>
-                <h3 className="card-title" style={{ fontSize: "1.2rem", margin: 0 }}>
-                  DM first
-                </h3>
-                <p className="body-copy">Replies within 24 hours, email available too.</p>
+                <h3 className="detail-strip__title">DM first</h3>
+                <p className="body-copy">Instagram replies within 24 hours, email available too.</p>
               </div>
             </div>
 
             <div className="detail-card surface">
               <SectionHeading
-                eyebrow="What this product is for"
-                title="Moderate content, clear buying context."
-                body="Everything here is focused on the details that help you decide quickly, without turning the page into a long brochure."
+                eyebrow="Product details"
+                title="Everything needed to decide quickly — with the details that matter most close at hand."
+                body="Materials, room fit, and practical details stay close at hand so you can decide with confidence."
               />
 
               <div className="detail-columns">
                 <div className="detail-list">
-                  <h3 className="card-title" style={{ fontSize: "1.2rem", margin: 0 }}>
-                    Highlights
-                  </h3>
+                  <h3 className="detail-section-title">Highlights</h3>
                   {product.highlights.map((item) => (
                     <div className="detail-list__item" key={item}>
                       <span className="badge">Why it works</span>
@@ -105,9 +107,7 @@ export default function ProductPage() {
                 </div>
 
                 <div className="detail-list">
-                  <h3 className="card-title" style={{ fontSize: "1.2rem", margin: 0 }}>
-                    Product facts
-                  </h3>
+                  <h3 className="detail-section-title">Product facts</h3>
                   {product.specs.map((item) => (
                     <div className="detail-list__item" key={item.label}>
                       <p className="fine-copy">{item.label}</p>
@@ -121,27 +121,29 @@ export default function ProductPage() {
 
           <div className="detail-card detail-card--sticky surface" style={{ "--card-accent": accent }}>
             <div className="badge-row">
-              <span className="badge badge--solid">{product.catalogType}</span>
+              <span className="badge badge--solid">{product.badge || product.catalogType}</span>
               <span className="badge">{product.sku}</span>
               <span className="badge badge--dark">{stockStatusLabels[product.stockStatus]}</span>
             </div>
 
-            <div style={{ display: "grid", gap: "var(--space-3)" }}>
+            <div className="detail-heading">
               <h1 className="page-title">{product.name}</h1>
               <p className="lede">{product.summary}</p>
             </div>
 
-            <div className="detail-meta" style={{ justifyContent: "space-between", alignItems: "end" }}>
-              <span className="price-text" style={{ fontSize: "2.4rem" }}>
-                {product.priceLabel}
-              </span>
-              <div style={{ textAlign: "right" }}>
-                <p className="fine-copy">GST included</p>
-                <p className="fine-copy">Per-item promise stays under S$159</p>
+            <div className="detail-price-panel">
+              <div>
+                <span className="price-text detail-price-panel__value">{product.priceLabel}</span>
+                <p className="fine-copy">GST included · every item stays under the One59 promise.</p>
+              </div>
+
+              <div className="detail-proof">
+                <span className="detail-proof__rating">{product.socialProof.rating} / 5</span>
+                <span className="fine-copy">{product.socialProof.reviews} customer review notes</span>
               </div>
             </div>
 
-            <div className="detail-list">
+            <div className="detail-summary-card">
               <div className="summary-row">
                 <span className="fine-copy">Category</span>
                 <span className="body-copy">{product.category.name}</span>
@@ -165,34 +167,54 @@ export default function ProductPage() {
             </div>
 
             {product.stockStatus !== "sold_out" ? (
-              <>
-                <QuantityStepper
-                  onDecrease={() => setQuantity((current) => Math.max(1, current - 1))}
-                  onIncrease={() => setQuantity((current) => current + 1)}
-                  value={quantity}
-                />
+              <div className="detail-buy-stack">
+                <div className="detail-buy-row">
+                  <div>
+                    <p className="fine-copy">Quantity</p>
+                    <p className="body-copy">Choose the quantity you want before adding this piece to your cart.</p>
+                  </div>
+
+                  <QuantityStepper
+                    onChange={(nextValue) => setQuantity(Math.max(1, nextValue))}
+                    onDecrease={() => setQuantity((current) => Math.max(1, current - 1))}
+                    onIncrease={() => setQuantity((current) => current + 1)}
+                    value={quantity}
+                  />
+                </div>
 
                 <div className="detail-actions">
-                  <button className="btn btn--primary" onClick={() => addToCart(product, quantity)} type="button">
-                    Add {quantity} to cart
-                  </button>
+                  <AddToCartButton
+                    label={quantity === 1 ? "Add to cart" : `Add ${quantity} to cart`}
+                    product={product}
+                    quantity={quantity}
+                  />
                   <Link className="btn btn--ghost" to="/cart">
-                    View cart
+                    {quantityInCart ? `View cart (${quantityInCart})` : "View cart"}
                   </Link>
                 </div>
-              </>
+
+                <div className={`detail-status${wasJustAdded ? " detail-status--success" : ""}`}>
+                  {wasJustAdded
+                    ? `${product.name} was added to your cart.`
+                    : quantityInCart
+                      ? `You already have ${quantityInCart} in your cart.`
+                      : "Need a quick stock or delivery check first? Instagram DM is the fastest support channel."}
+                </div>
+              </div>
             ) : (
               <div className="mini-card">
                 <span className="eyebrow">Sold out</span>
-                <p className="body-copy">
-                  This SKU is currently unavailable. You can still explore similar pieces in the same category below.
-                </p>
+                <p className="body-copy">This SKU is currently unavailable. Similar pieces are listed below so you can keep browsing nearby options.</p>
               </div>
             )}
 
-            <div className="mini-card">
-              <span className="eyebrow">Support note</span>
-              <p className="body-copy">Instagram DM is the fastest channel for stock questions. Email stays available for longer order notes.</p>
+            <div className="trust-list">
+              {trustItems.map((item) => (
+                <div className="trust-list__item" key={item}>
+                  <span className="badge">Store truth</span>
+                  <p className="body-copy">{item}</p>
+                </div>
+              ))}
             </div>
 
             <div className="mini-card">
@@ -208,15 +230,23 @@ export default function ProductPage() {
         {alternatives.length ? (
           <section className="section">
             <SectionHeading
-              eyebrow={product.stockStatus === "sold_out" ? "Same-category alternatives" : "Pairs with the same room"}
-              title={product.stockStatus === "sold_out" ? "Sold-out products should never leave shoppers stranded." : "Useful alternatives stay close to the product story."}
-              body={product.stockStatus === "sold_out" ? "If a piece is gone, nearby alternatives make it easier to keep shopping without starting over." : "Similar pieces stay close by so you can compare options without losing the feel of the room you are building."}
+              eyebrow={product.stockStatus === "sold_out" ? "Same-category alternatives" : "Compare nearby picks"}
+              title={
+                product.stockStatus === "sold_out"
+                  ? "Keep the room idea going with similar pieces."
+                  : "Compare nearby options for the same room."
+              }
+              body={
+                product.stockStatus === "sold_out"
+                  ? "If this piece is unavailable, these alternatives offer a similar fit, feel, or function for the same room."
+                  : "These alternatives make it easier to compare room fit, price, and finish before you decide."
+              }
             />
 
-            <div className="catalog-grid">
+            <div className="catalog-grid catalog-grid--dense">
               {alternatives.map((item, index) => (
-                <AnimateIn delay={index * 60} key={item.slug}>
-                  <ProductCard product={item} />
+                <AnimateIn delay={index * 40} key={item.slug}>
+                  <ProductCard product={item} showCategory />
                 </AnimateIn>
               ))}
             </div>
