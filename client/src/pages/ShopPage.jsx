@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 
+import { useStore } from "../app/store.js";
 import EmptyState from "../components/EmptyState.jsx";
 import ProductCard from "../components/ProductCard.jsx";
-import SectionHeading from "../components/SectionHeading.jsx";
 import AnimateIn from "../components/ui/AnimateIn.jsx";
-import { categories, getCategoryBySlug, products } from "../content/catalog/index.js";
+import { catalogStats, categories, getCategoryBySlug, products } from "../content/catalog/index.js";
 
 const sortOptions = {
   featured: (a, b) => (a.stockStatus === "sold_out") - (b.stockStatus === "sold_out"),
@@ -17,6 +17,7 @@ const sortOptions = {
 export default function ShopPage() {
   const { categorySlug } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { cart } = useStore();
 
   const category = categorySlug ? getCategoryBySlug(categorySlug) : null;
   const invalidCategory = Boolean(categorySlug && !category);
@@ -38,15 +39,25 @@ export default function ShopPage() {
     setSearchParams(next);
   };
 
+  const clearFilters = () => {
+    setSearchParams(new URLSearchParams());
+  };
+
   const filteredProducts = useMemo(() => {
     const matchingSearch = products.filter((product) => {
       const matchesCategory = category ? product.categorySlug === category.slug : true;
       const matchesType = type === "all" ? true : product.catalogType === type;
       const matchesAvailability =
-        availability === "all" ? true : availability === "available" ? product.stockStatus !== "sold_out" : product.stockStatus === "sold_out";
+        availability === "all"
+          ? true
+          : availability === "available"
+            ? product.stockStatus !== "sold_out"
+            : product.stockStatus === "sold_out";
       const term = q.trim().toLowerCase();
       const matchesQuery = term
-        ? `${product.name} ${product.summary} ${product.category.name}`.toLowerCase().includes(term)
+        ? `${product.name} ${product.summary} ${product.category.name} ${product.materials}`
+            .toLowerCase()
+            .includes(term)
         : true;
 
       return matchesCategory && matchesType && matchesAvailability && matchesQuery;
@@ -80,41 +91,60 @@ export default function ShopPage() {
           <AnimateIn className="page-hero__panel surface">
             <span className="eyebrow">Shop One59</span>
             <h1 className="page-title">
-              {category ? `${category.name} for mainland Singapore homes.` : "Evergreen picks and limited drops, side by side."}
+              {category
+                ? `${category.name} furniture for compact Singapore homes.`
+                : "Furniture for Singapore homes, all under the One59 promise."}
             </h1>
             <p className="lede">
               {category
                 ? category.description
-                : "Browse by search, category, availability, and catalogue type. The pricing story stays simple: every piece is under S$159, GST is included, and delivery remains 3 to 5 days across mainland Singapore."}
+                : "Search, filter, and compare across the full catalogue with GST-included pricing, clear availability, and room-led browsing built for everyday homes."}
             </p>
 
-            <div className="badge-row">
-              <span className="badge badge--dark">Guest checkout</span>
-              <span className="badge">No pickup</span>
-              <span className="badge">No express tier</span>
+            <div className="shop-hero-stats">
+              <div className="mini-card shop-hero-stat">
+                <span className="fine-copy">Catalogue size</span>
+                <strong className="shop-hero-stat__value">{catalogStats.totalProducts}</strong>
+                <span className="body-copy">Products live across {catalogStats.categoryCount} core rooms.</span>
+              </div>
+              <div className="mini-card shop-hero-stat">
+                <span className="fine-copy">In your cart</span>
+                <strong className="shop-hero-stat__value">{cart.count}</strong>
+                <span className="body-copy">Keep track of what you have picked while you browse the rest of the store.</span>
+              </div>
             </div>
           </AnimateIn>
 
           <AnimateIn className="page-hero__aside surface" delay={120}>
             <img alt={category ? category.name : "One59 shop"} src={category ? category.image : "/images/entryway-reset.webp"} />
-            <div style={{ display: "grid", gap: "var(--space-3)", marginTop: "var(--space-4)" }}>
-              <h2 className="card-title" style={{ fontSize: "1.6rem", margin: 0 }}>
-                Browse by room, style, and availability.
-              </h2>
+
+            <div className="page-hero__aside-copy">
+              <h2 className="page-hero__aside-title">Browse by room, compare by details, and shop with confidence.</h2>
               <p className="body-copy">
-                Search, filter, and compare pieces across the catalogue with clear prices, clear support details, and room-led browsing.
+                From materials to category fit to price, the essentials stay easy to scan so choosing the right piece feels straightforward.
               </p>
             </div>
           </AnimateIn>
         </div>
 
-        <div className="shop-toolbar surface" style={{ padding: "var(--space-5)" }}>
+        <div className="shop-toolbar surface">
+          <div className="shop-toolbar__header">
+            <div>
+              <span className="eyebrow">Refine the view</span>
+              <h2 className="shop-toolbar__title">Filter by room, stock, and catalogue type.</h2>
+            </div>
+
+            <button className="btn btn--ghost" onClick={clearFilters} type="button">
+              Clear filters
+            </button>
+          </div>
+
           <div className="field">
             <label htmlFor="shop-search">Search</label>
             <input
               id="shop-search"
               onChange={(event) => setParam("q", event.target.value)}
-              placeholder="Search by product or category"
+              placeholder="Search by product, room, or material"
               type="search"
               value={q}
             />
@@ -153,30 +183,39 @@ export default function ShopPage() {
           </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--space-4)", margin: "var(--space-6) 0" }}>
-          <p className="filter-note">
-            Showing {filteredProducts.length} product{filteredProducts.length === 1 ? "" : "s"}
-            {category ? ` in ${category.name}` : ""}.
-          </p>
+        <div className="results-meta">
+          <div>
+            <p className="filter-note">
+              Showing {filteredProducts.length} product{filteredProducts.length === 1 ? "" : "s"}
+              {category ? ` in ${category.name}` : ""}.
+            </p>
+            <p className="fine-copy">Every displayed price already includes GST.</p>
+          </div>
 
-          <div className="badge-row">
-            {categories.map((item) => (
-              <Link className="badge" key={item.slug} to={`/shop/${item.slug}`}>
-                {item.name}
-              </Link>
-            ))}
-            {category ? (
-              <Link className="badge badge--dark" to="/shop">
-                View all
-              </Link>
-            ) : null}
+          <div className="results-meta__actions">
+            <div className="badge-row">
+              {categories.map((item) => (
+                <Link className={`badge${category?.slug === item.slug ? " badge--dark" : ""}`} key={item.slug} to={`/shop/${item.slug}`}>
+                  {item.name}
+                </Link>
+              ))}
+              {category ? (
+                <Link className="badge" to="/shop">
+                  View all
+                </Link>
+              ) : null}
+            </div>
+
+            <Link className="btn btn--ghost" to="/cart">
+              Cart ({cart.count})
+            </Link>
           </div>
         </div>
 
         {filteredProducts.length ? (
-          <div className="catalog-grid">
+          <div className="catalog-grid catalog-grid--dense">
             {filteredProducts.map((product, index) => (
-              <AnimateIn delay={index * 40} key={product.slug}>
+              <AnimateIn delay={index * 20} key={product.slug}>
                 <ProductCard product={product} showCategory={!category} />
               </AnimateIn>
             ))}
@@ -184,9 +223,9 @@ export default function ShopPage() {
         ) : (
           <EmptyState
             action={
-              <Link className="btn btn--primary" to={category ? `/shop/${category.slug}` : "/shop"}>
+              <button className="btn btn--primary" onClick={clearFilters} type="button">
                 Reset this view
-              </Link>
+              </button>
             }
             body="Try removing a filter, searching a broader term, or browsing a different room collection."
             title="No products match this combination"
