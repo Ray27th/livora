@@ -72,7 +72,6 @@ export default function Layout() {
                 <span className="brand__name">one59</span>
                 <span className="brand__tag">Singapore furniture under S$159</span>
               </div>
-              <span className="brand__signal">Factory-direct pricing. No fake markdown theatre.</span>
             </Link>
 
             <nav aria-label="Primary" className="site-nav">

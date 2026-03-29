@@ -6,15 +6,15 @@
 
   --color-ink: #171410;
   --color-ink-soft: #4c433a;
-  --color-paper: #f6efe7;
-  --color-paper-deep: #ecdfd0;
-  --color-paper-strong: #e8d8c8;
-  --color-panel: rgba(255, 250, 244, 0.82);
-  --color-panel-muted: rgba(255, 249, 242, 0.74);
-  --color-panel-deep: rgba(255, 252, 248, 0.94);
-  --color-panel-strong: #fffaf4;
-  --color-line: rgba(23, 20, 16, 0.14);
-  --color-line-strong: rgba(23, 20, 16, 0.24);
+  --color-paper: #FAFAF7;
+  --color-paper-deep: #F5F3EF;
+  --color-paper-strong: #EFEDE8;
+  --color-panel: #FFFFFF;
+  --color-panel-muted: #FAFAF7;
+  --color-panel-deep: #F7F7F4;
+  --color-panel-strong: #FFFFFF;
+  --color-line: rgba(0, 0, 0, 0.08);
+  --color-line-strong: rgba(0, 0, 0, 0.14);
   --color-accent: #cb6430;
   --color-accent-deep: #9d451f;
   --color-sage: #6d7d67;
@@ -41,17 +41,17 @@
   --space-16: 4rem;
   --space-20: 5rem;
 
-  --radius-sm: 0.75rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
-  --radius-xl: 2rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
   --radius-pill: 999px;
 
-  --shadow-card: 0 22px 60px rgba(23, 20, 16, 0.12);
-  --shadow-soft: 0 12px 32px rgba(23, 20, 16, 0.08);
-  --shadow-strong: 0 24px 80px rgba(23, 20, 16, 0.18);
-  --shadow-lift: 0 28px 90px rgba(23, 20, 16, 0.14);
-  --shadow-hover: 0 24px 72px rgba(23, 20, 16, 0.18);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-strong: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lift: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.1);
 
   --duration-fast: 180ms;
   --duration-base: 260ms;
@@ -81,11 +81,7 @@ body,
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at 12% 0%, rgba(203, 100, 48, 0.2), transparent 30%),
-    radial-gradient(circle at 88% 8%, rgba(109, 125, 103, 0.18), transparent 20%),
-    radial-gradient(circle at 50% 100%, rgba(177, 132, 75, 0.12), transparent 32%),
-    linear-gradient(180deg, #fffaf5 0%, var(--color-paper) 42%, #f3e8dc 100%);
+  background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-body);
 }
@@ -140,29 +136,25 @@ button {
 
 .surface {
   position: relative;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.56)),
-    var(--color-panel);
-  border: 1px solid rgba(23, 20, 16, 0.1);
+  background: #FFFFFF;
+  border: 1px solid var(--color-line);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lift);
-  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-card);
 }
 
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 2rem;
-  padding: 0 var(--space-4);
-  border-radius: var(--radius-pill);
-  border: 1px solid rgba(23, 20, 16, 0.1);
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  color: var(--color-accent-deep);
+  min-height: 1.75rem;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-line);
+  background: var(--color-paper);
+  color: var(--color-ink-soft);
   font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -235,7 +227,7 @@ button {
   font-size: 0.92rem;
   font-weight: 800;
   letter-spacing: 0.02em;
-  box-shadow: 0 10px 24px rgba(23, 20, 16, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   transition:
     transform var(--duration-fast) var(--ease-out),
     background-color var(--duration-fast) var(--ease-out),
@@ -257,7 +249,7 @@ button {
 .btn--primary {
   background: linear-gradient(180deg, #27211b 0%, var(--color-ink) 100%);
   color: var(--color-white);
-  box-shadow: 0 14px 28px rgba(23, 20, 16, 0.16);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
 .btn--primary:hover {
@@ -267,7 +259,7 @@ button {
 .btn--accent {
   background: linear-gradient(180deg, #d5723f 0%, var(--color-accent) 100%);
   color: var(--color-white);
-  box-shadow: 0 14px 28px rgba(203, 100, 48, 0.22);
+  box-shadow: 0 2px 8px rgba(203, 100, 48, 0.16);
 }
 
 .btn--accent:hover {
@@ -277,7 +269,7 @@ button {
 .btn--success {
   background: linear-gradient(180deg, #56715d 0%, var(--color-success) 100%);
   color: var(--color-white);
-  box-shadow: 0 14px 28px rgba(67, 97, 75, 0.18);
+  box-shadow: 0 2px 8px rgba(67, 97, 75, 0.12);
 }
 
 .btn--success:hover {
@@ -285,9 +277,9 @@ button {
 }
 
 .btn--ghost {
-  background: rgba(255, 255, 255, 0.76);
+  background: #FFFFFF;
   color: var(--color-ink);
-  border-color: rgba(23, 20, 16, 0.1);
+  border-color: var(--color-line);
 }
 
 .btn--ghost:hover {
@@ -299,10 +291,9 @@ button {
   position: sticky;
   top: 0;
   z-index: 40;
-  backdrop-filter: blur(18px);
-  background: linear-gradient(90deg, rgba(23, 20, 16, 0.96), rgba(41, 32, 25, 0.96));
+  background: var(--color-ink);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 12px 30px rgba(23, 20, 16, 0.14);
+  box-shadow: none;
   color: rgba(255, 255, 255, 0.88);
 }
 
@@ -373,7 +364,6 @@ button {
   top: 0;
   z-index: 30;
   padding: var(--space-3) 0;
-  backdrop-filter: blur(16px);
 }
 
 .site-header--with-banner {
@@ -385,12 +375,10 @@ button {
   gap: var(--space-3);
   position: relative;
   padding: var(--space-3) var(--space-4);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.58)),
-    rgba(251, 247, 242, 0.84);
-  border: 1px solid rgba(23, 20, 16, 0.08);
+  background: #FFFFFF;
+  border: 1px solid var(--color-line);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lift);
+  box-shadow: var(--shadow-soft);
 }
 
 .site-header__row {
@@ -436,8 +424,8 @@ button {
   min-height: 1.85rem;
   padding: 0 var(--space-2);
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.54);
-  border: 1px solid rgba(23, 20, 16, 0.08);
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
   color: var(--color-ink-soft);
   font-size: 0.76rem;
   font-weight: 600;
@@ -485,7 +473,7 @@ button {
 }
 
 .site-header__trust-row .badge {
-  background: rgba(255, 255, 255, 0.62);
+  background: #FFFFFF;
 }
 
 .site-header__support {
@@ -509,9 +497,9 @@ button {
   height: 2.9rem;
   border: 1px solid var(--color-line);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.84);
+  background: #FFFFFF;
   color: var(--color-ink);
-  box-shadow: 0 10px 24px rgba(23, 20, 16, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   transition:
     background-color var(--duration-fast) var(--ease-out),
     border-color var(--duration-fast) var(--ease-out),
@@ -527,7 +515,7 @@ button {
 .icon-btn--soft {
   width: 2.5rem;
   height: 2.5rem;
-  background: rgba(255, 255, 255, 0.88);
+  background: #FFFFFF;
   box-shadow: none;
 }
 
@@ -542,7 +530,7 @@ button {
   background: linear-gradient(135deg, #27211b 0%, var(--color-ink) 100%);
   color: var(--color-white);
   font-weight: 800;
-  box-shadow: 0 20px 40px rgba(23, 20, 16, 0.24);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .cart-pill__icon {
@@ -613,9 +601,8 @@ button {
   align-items: center;
   gap: var(--space-4);
   padding: var(--space-4);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.68)),
-    var(--color-panel);
+  background: #FFFFFF;
+  border: 1px solid var(--color-line);
   box-shadow: var(--shadow-hover);
 }
 
@@ -652,7 +639,7 @@ button {
   height: 2.5rem;
   border: 1px solid var(--color-line);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.82);
+  background: #FFFFFF;
   color: var(--color-ink);
 }
 
@@ -712,7 +699,6 @@ button {
   border: 1px solid var(--color-line);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
-  backdrop-filter: blur(18px);
 }
 
 .hero__copy {
@@ -720,9 +706,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
-  background:
-    radial-gradient(circle at top left, rgba(203, 100, 48, 0.18), transparent 34%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.54));
+  background: #FFFFFF;
 }
 
 .hero__kicker-row,
@@ -759,9 +743,8 @@ button {
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   min-height: 100%;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(0, 0, 0, 0.02);
   border: 1px solid var(--color-line);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .hero-stat__title,
@@ -798,9 +781,7 @@ button {
   padding: var(--space-6);
   display: grid;
   gap: var(--space-4);
-  background:
-    radial-gradient(circle at 20% 0%, rgba(203, 100, 48, 0.18), transparent 30%),
-    linear-gradient(180deg, rgba(255, 250, 244, 0.92), rgba(255, 250, 244, 0.7));
+  background: var(--color-paper);
 }
 
 .hero__spotlight-grid {
@@ -812,17 +793,12 @@ button {
   border-radius: calc(var(--radius-xl) - var(--space-2));
   overflow: hidden;
   min-height: 23rem;
-  background: rgba(255, 255, 255, 0.82);
+  background: var(--color-paper);
   box-shadow: var(--shadow-soft);
 }
 
 .hero__image-wrap::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0;
-  height: 40%;
-  background: linear-gradient(180deg, transparent, rgba(23, 20, 16, 0.18));
-  pointer-events: none;
+  content: none;
 }
 
 .hero__image-wrap img {
@@ -839,9 +815,9 @@ button {
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(180deg, rgba(33, 27, 22, 0.94), rgba(23, 20, 16, 0.96));
+  background: var(--color-ink);
   color: var(--color-white);
-  box-shadow: 0 18px 40px rgba(23, 20, 16, 0.22);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 }
 
 .metrics-grid,
@@ -895,9 +871,7 @@ button {
 .testimonial-card,
 .contact-card,
 .mini-card {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.6)),
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.55), transparent 30%);
+  background: #FFFFFF;
 }
 
 .category-card {
@@ -922,11 +896,7 @@ button {
 .cart-card::before,
 .hero__copy::before,
 .hero__visual::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent, rgba(23, 20, 16, 0.02));
-  pointer-events: none;
+  content: none;
 }
 
 .category-card__overlay {
@@ -969,16 +939,11 @@ button {
 }
 
 .home-section-shell--featured {
-  background:
-    radial-gradient(circle at top left, rgba(203, 100, 48, 0.1), transparent 28%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.6));
+  background: #FFFFFF;
 }
 
 .home-section-shell--drop {
-  background:
-    radial-gradient(circle at top right, rgba(109, 125, 103, 0.1), transparent 26%),
-    radial-gradient(circle at top left, rgba(203, 100, 48, 0.08), transparent 22%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.58));
+  background: #FFFFFF;
 }
 
 .catalog-grid .product-card {
@@ -1013,19 +978,12 @@ button {
   position: relative;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  border-bottom: 1px solid rgba(23, 20, 16, 0.08);
-  background:
-    radial-gradient(circle at top left, color-mix(in srgb, var(--card-accent) 22%, white), transparent 32%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.48));
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-paper);
 }
 
 .product-card__media::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0;
-  height: 36%;
-  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.7));
-  pointer-events: none;
+  content: none;
 }
 
 .product-card__media-badges {
@@ -1043,9 +1001,7 @@ button {
 
 .product-image--illustration,
 .product-image--fallback {
-  background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.82), transparent 42%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.3));
+  background: var(--color-paper);
 }
 
 .product-image--illustration svg {
@@ -1176,8 +1132,8 @@ button {
   align-content: start;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.58);
-  border: 1px solid rgba(23, 20, 16, 0.06);
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
 }
 
 .price-text {
@@ -1198,8 +1154,8 @@ button {
   min-height: 1.8rem;
   padding: 0 var(--space-3);
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(23, 20, 16, 0.08);
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
   color: var(--color-ink-soft);
   font-size: 0.73rem;
   font-weight: 800;
@@ -1255,8 +1211,8 @@ button {
   margin-bottom: var(--space-6);
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.58);
-  border: 1px solid rgba(23, 20, 16, 0.08);
+  background: #FFFFFF;
+  border: 1px solid var(--color-line);
   width: fit-content;
   max-width: 100%;
 }
@@ -1305,9 +1261,7 @@ button {
   display: grid;
   gap: var(--space-5);
   min-height: 100%;
-  background:
-    radial-gradient(circle at top left, rgba(203, 100, 48, 0.14), transparent 28%),
-    rgba(255, 255, 255, 0.56);
+  background: #FFFFFF;
 }
 
 .page-hero__aside img {
@@ -1324,7 +1278,7 @@ button {
 }
 
 .page-hero__aside-point {
-  background: rgba(255, 255, 255, 0.72);
+  background: #FFFFFF;
 }
 
 .shop-hero-stats,
@@ -1355,7 +1309,7 @@ button {
 .shop-hero-stat {
   padding: var(--space-4);
   min-height: 100%;
-  background: rgba(255, 255, 255, 0.72);
+  background: #FFFFFF;
 }
 
 .shop-hero-stat__value {
@@ -1368,9 +1322,7 @@ button {
   align-items: center;
   margin-top: var(--space-8);
   padding: var(--space-5);
-  background:
-    radial-gradient(circle at top left, rgba(203, 100, 48, 0.08), transparent 24%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.6));
+  background: #FFFFFF;
 }
 
 .shop-toolbar__header {
@@ -1412,9 +1364,9 @@ button {
   padding: 0.9rem 1rem;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.88);
+  background: #FFFFFF;
   color: var(--color-ink);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  box-shadow: none;
   transition:
     border-color var(--duration-fast) var(--ease-out),
     box-shadow var(--duration-fast) var(--ease-out),
@@ -1489,7 +1441,7 @@ button {
 
 .hero-spotlight-card {
   min-height: 100%;
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--color-paper);
 }
 
 .catalog-grid--spaced {
@@ -1516,9 +1468,7 @@ button {
   overflow: hidden;
   aspect-ratio: 1 / 1;
   border-radius: calc(var(--radius-xl) - var(--space-1));
-  background:
-    radial-gradient(circle at top left, color-mix(in srgb, var(--detail-accent) 24%, white), transparent 30%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.48));
+  background: var(--color-paper);
 }
 
 .detail-gallery__frame img,
@@ -1540,7 +1490,7 @@ button {
 }
 
 .detail-gallery__caption {
-  background: rgba(255, 255, 255, 0.76);
+  background: #FFFFFF;
 }
 
 .detail-strip {
@@ -1553,7 +1503,7 @@ button {
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-line);
-  background: rgba(255, 255, 255, 0.72);
+  background: #FFFFFF;
 }
 
 .detail-strip__title {
@@ -1563,9 +1513,7 @@ button {
 .detail-card {
   display: grid;
   gap: var(--space-5);
-  background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.74), transparent 32%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.6));
+  background: #FFFFFF;
 }
 
 .detail-card--sticky {
@@ -1609,7 +1557,7 @@ button {
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-line);
-  background: rgba(255, 255, 255, 0.7);
+  background: #FFFFFF;
 }
 
 .detail-buy-row {
@@ -1641,7 +1589,7 @@ button {
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-line);
-  background: rgba(255, 255, 255, 0.68);
+  background: #FFFFFF;
 }
 
 .detail-list__item,
@@ -1660,8 +1608,8 @@ button {
   padding: 0.35rem;
   border-radius: var(--radius-pill);
   border: 1px solid var(--color-line);
-  background: rgba(255, 255, 255, 0.8);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  background: #FFFFFF;
+  box-shadow: none;
 }
 
 .stepper__value {
@@ -1716,7 +1664,7 @@ button {
   gap: var(--space-4);
   padding: var(--space-5);
   border-radius: var(--radius-xl);
-  background: rgba(255, 255, 255, 0.76);
+  background: #FFFFFF;
   border: 1px solid var(--color-line);
   box-shadow: var(--shadow-soft);
 }
@@ -1732,10 +1680,7 @@ button {
   aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: var(--radius-md);
-  background:
-    radial-gradient(circle at top left, color-mix(in srgb, var(--item-accent) 22%, white), transparent 26%),
-    rgba(255, 255, 255, 0.88);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  background: var(--color-paper);
 }
 
 .cart-item__media img,
@@ -1774,7 +1719,7 @@ button {
   justify-items: end;
   text-align: right;
   min-width: 18rem;
-  background: rgba(255, 255, 255, 0.74);
+  background: #FFFFFF;
 }
 
 .cart-item__header {
@@ -1849,8 +1794,8 @@ button {
   gap: var(--space-4);
   padding: var(--space-5);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(23, 20, 16, 0.08);
-  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid var(--color-line);
+  background: #FFFFFF;
 }
 
 .checkout-status {
@@ -1894,10 +1839,8 @@ button {
   flex-shrink: 0;
   overflow: hidden;
   border-radius: var(--radius-md);
-  background:
-    radial-gradient(circle at top left, color-mix(in srgb, var(--item-accent) 22%, white), transparent 26%),
-    rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(23, 20, 16, 0.08);
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
 }
 
 .checkout-summary-item__media img,
@@ -1924,7 +1867,7 @@ button {
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-line);
-  background: rgba(255, 255, 255, 0.7);
+  background: #FFFFFF;
 }
 
 .policy-card {

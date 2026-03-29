@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { CategoryLinkRow } from "../components/Layout.jsx";
 import ProductCard from "../components/ProductCard.jsx";
 import SectionHeading from "../components/SectionHeading.jsx";
-import { DeliveryIcon, ShieldIcon, SparkIcon } from "../components/icons.jsx";
+
 import AnimateIn from "../components/ui/AnimateIn.jsx";
 import {
   catalogStats,
@@ -15,96 +15,28 @@ import {
 } from "../content/catalog/index.js";
 import { homeStory, testimonials, trustPoints } from "../content/site/index.js";
 
-const heroPoints = [
-  {
-    icon: <SparkIcon />,
-    title: `${catalogStats.totalProducts} room-ready pieces`,
-    body: "Evergreen staples and sharper drops sit side by side, so there is always something useful to browse.",
-  },
-  {
-    icon: <DeliveryIcon />,
-    title: "Mainland Singapore only",
-    body: "Every product, delivery note, and support promise is tuned for the local shopping reality.",
-  },
-  {
-    icon: <ShieldIcon />,
-    title: "Clear details up front",
-    body: "GST included, 3 to 5 day delivery, returns, and support details stay visible while you browse.",
-  },
-];
-
 export default function HomePage() {
   return (
     <>
       <section className="section">
         <div className="container hero">
           <AnimateIn className="hero__copy surface">
-            <div className="hero__kicker-row">
-              <span className="eyebrow">Under S$159, always</span>
-              <div className="hero__highlight">
-                <SparkIcon size={16} />
-                <span>{homeStory.highlight}</span>
-              </div>
-            </div>
-
-            <div className="hero__stack">
-              <h1 className="display-title">Furniture under S$159 that feels calm, credible, and worth sharing.</h1>
-              <p className="lede">{homeStory.body}</p>
-            </div>
-
-            <div className="badge-row hero__badge-row">
-              <span className="badge badge--dark">GST included</span>
-              <span className="badge">3 to 5 day delivery</span>
-              <span className="badge">Mainland Singapore only</span>
-            </div>
-
+            <span className="eyebrow">Under S$159, always</span>
+            <h1 className="display-title">Furniture that feels calm, credible, and worth sharing.</h1>
+            <p className="lede">{homeStory.body}</p>
             <div className="button-row">
               <Link className="btn btn--primary" to="/shop">
-                Shop the full catalogue
+                Shop the catalogue
               </Link>
               <Link className="btn btn--ghost" to="/drops">
-                Browse live drops
+                Browse drops
               </Link>
             </div>
-
-            <div className="hero-stat-grid">
-              {heroPoints.map((item) => (
-                <div className="hero-stat" key={item.title}>
-                  <span className="eyebrow">{item.icon} Store truth</span>
-                  <h2 className="hero-stat__title">{item.title}</h2>
-                  <p className="body-copy">{item.body}</p>
-                </div>
-              ))}
-            </div>
-
-            <CategoryLinkRow />
           </AnimateIn>
 
           <AnimateIn className="hero__visual surface" delay={120}>
             <div className="hero__image-wrap">
               <img alt="One59 room starter scene" src="/images/room-starter.webp" />
-            </div>
-
-            <div className="hero__spotlight-grid">
-              <div className="mini-card hero-spotlight-card">
-                <span className="eyebrow">Live now</span>
-                <h2 className="hero-spotlight-card__title">{liveDrop.name}</h2>
-                <p className="body-copy">{liveDrop.summary}</p>
-                <p className="fine-copy">{liveDrop.windowLabel}</p>
-              </div>
-
-              <div className="mini-card hero-spotlight-card">
-                <span className="eyebrow">Why it lands</span>
-                <h2 className="hero-spotlight-card__title">Calm design, honest value.</h2>
-                <p className="body-copy">
-                  Clean shapes, useful details, and GST-included pricing keep the focus on pieces that look good and make sense at home.
-                </p>
-              </div>
-            </div>
-
-            <div className="hero__floating">
-              <p className="fine-copy">Guest checkout stays simple.</p>
-              <p className="body-copy">Choose your pieces, review your quantities, and check out with just the details needed for delivery.</p>
             </div>
           </AnimateIn>
         </div>

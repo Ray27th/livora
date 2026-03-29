@@ -14,7 +14,7 @@ const availabilityClass = {
 
 export default function ProductCard({ product, showCategory = false }) {
   const { getCartQuantity } = useStore();
-  const quantityInCart = getCartQuantity(product);
+  const _quantityInCart = getCartQuantity(product);
   const accent = `var(--tone-${product.tone})`;
   const metaLine = showCategory ? product.category.name : product.sku;
 
@@ -24,7 +24,6 @@ export default function ProductCard({ product, showCategory = false }) {
         <ProductImage objectFit="cover" product={product} />
 
         <div className="product-card__media-badges">
-          <span className="badge badge--solid">{product.badge || product.catalogType}</span>
           <span className={availabilityClass[product.stockStatus]}>{stockStatusLabels[product.stockStatus]}</span>
         </div>
       </Link>
@@ -44,26 +43,6 @@ export default function ProductCard({ product, showCategory = false }) {
 
             <div className="product-card__price-block">
               <span className="price-text">{product.priceLabel}</span>
-            </div>
-          </div>
-
-          <p className="body-copy product-card__summary">{product.summary}</p>
-
-          <div className="product-card__meta">
-            <span className="fine-copy">{product.finish}</span>
-            <span className="fine-copy">{product.dimensions}</span>
-            {quantityInCart ? <span className="badge badge--dark">{quantityInCart} in cart</span> : null}
-          </div>
-
-          <div className="product-card__specs">
-            <div className="product-card__spec">
-              <span className="fine-copy">Materials</span>
-              <span className="body-copy">{product.materials}</span>
-            </div>
-
-            <div className="product-card__spec">
-              <span className="fine-copy">Assembly</span>
-              <span className="body-copy">{product.assembly}</span>
             </div>
           </div>
 
